@@ -1,50 +1,60 @@
 const numbers = [];
+const oddNumbers = [];
+const evenNumbers = [];
 
 const form = document.querySelector("form");
-const output = document.querySelector("output");
+const numberInput = document.getElementById("number");
+const numberBankOutput = document.querySelector("#numberBank output");
+const oddsOutput = document.querySelector("#odds output");
+const evensOutput = document.querySelector("#evens output");
+const sortOneButton = document.getElementById("sortOne");
+const sortAllButton = document.getElementById("sortAll");
 
 form.addEventListener("submit", addNumber);
 sortOneButton.addEventListener("click", sortFirst);
 sortAllButton.addEventListener("click", sortAll);
 
-render();
-
 function render() {
-  const numberElems = numbers.map((number) => {
-    const elem = document.createElement("span");
-    elem.textContent = number;
-    elem.classList.add("number");
+  numberBankOutput.textContent = numbers.join(", ");
+  oddsOutput.textContent = oddNumbers.join(", ");
+  evensOutput.textContent = evenNumbers.join(", ");
+}
+function addNumber(event) {
+  event.preventDefault();
+  const input = numberInput.value;
 
-    return elem;
-  });
+  if (!isNaN(input) && input.trim() !== "") {
+    numbers.push(Number(input));
+  }
 
-  output.replaceChildren(
-    ...numberElems.flatMap((elem, index) =>
-      //
-      index < numberElems.length - 1
-        ? [elem, document.createTextNode(", ")]
-        : [elem]
-    )
-  );
-  //
+  numberInput.value = "";
+  render();
 }
 
-function onButtonClick(event) {
-  if (event.target.classList.contains("number")) {
-    console.log(event.target.textContent);
-    const idx = numbers.indexOf(event.target.textContent);
-    numbers.splice.apply(idx, 1);
+function sortFirst() {
+  if (numbers.length === 0) return;
+
+  const number = numbers.shift();
+  if (number % 2 === 0) {
+    evenNumbers.push(number);
+  } else {
+    oddNumbers.push(number);
   }
 
   render();
 }
 
-function addNumber(event) {
-  event.preventDefault();
+function sortAll() {
+  while (numbers.length > 0) {
+    const number = numbers.shift();
+    if (number % 2 === 0) {
+      evenNumbers.push(number);
+    } else {
+      oddNumbers.push(number);
+    }
+  }
 
-  const number = event.target.number.value;
-  numbers.push(Number(number));
-  console.log("NUMBERS : ", numbers);
-  event.target.number.value = "";
   render();
 }
+
+render();
